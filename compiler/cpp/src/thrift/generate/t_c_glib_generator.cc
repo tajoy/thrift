@@ -3460,21 +3460,26 @@ void t_c_glib_generator::generate_object(t_struct* tstruct) {
   scope_down(f_types_impl_);
   f_types_impl_ << endl;
 
-  f_types_impl_ << "GType" << endl << this->nspace_lc << name_u << "_get_type (void)" << endl << "{"
-                << endl << "  static GType type = 0;" << endl << endl << "  if (type == 0) " << endl
-                << "  {" << endl << "    static const GTypeInfo type_info = " << endl << "    {"
-                << endl << "      sizeof (" << this->nspace << name << "Class)," << endl
-                << "      NULL, /* base_init */" << endl << "      NULL, /* base_finalize */"
-                << endl << "      (GClassInitFunc) " << this->nspace_lc << name_u << "_class_init,"
-                << endl << "      NULL, /* class_finalize */" << endl
-                << "      NULL, /* class_data */" << endl << "      sizeof (" << this->nspace
-                << name << ")," << endl << "      0, /* n_preallocs */" << endl
-                << "      (GInstanceInitFunc) " << this->nspace_lc << name_u << "_instance_init,"
-                << endl << "      NULL, /* value_table */" << endl << "    };" << endl << endl
-                << "    type = g_type_register_static (THRIFT_TYPE_STRUCT, " << endl
-                << "                                   \"" << this->nspace << name << "Type\","
-                << endl << "                                   &type_info, 0);" << endl << "  }"
-                << endl << endl << "  return type;" << endl << "}" << endl << endl;
+
+  f_types_impl_ << "GType"
+                << endl << this->nspace_lc << name_u << "_get_type (void)" << endl << "{"
+                << endl << "  static volatile gsize type = 0;" << endl  << endl
+                << "  if (g_once_init_enter (&type))" << endl << "  {"
+                << endl << "    GType _type = g_type_register_static_simple (THRIFT_TYPE_STRUCT," 
+                << endl << "                                               "
+                << "  g_intern_static_string (\"" << this->nspace << name << "Type\"),"
+                << endl << "                                               "
+                << "  sizeof (" << this->nspace << name << "Class),"
+                << endl << "                                               "
+                << "  (GClassInitFunc) " << this->nspace_lc << name_u << "_class_init,"
+                << endl << "                                               "
+                << "  sizeof (" << this->nspace << name << "),"
+                << endl << "                                               "
+                << "  (GInstanceInitFunc) " << this->nspace_lc << name_u << "_instance_init,"
+                << endl << "                                               "
+                << "  (GTypeFlags) 0); "
+                << endl  << endl << "    g_once_init_leave (&type, _type);" << endl << "  } "
+                << endl  << endl << "  return type;" << endl << "}" << endl << endl;
 }
 
 /**

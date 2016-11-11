@@ -3463,7 +3463,7 @@ void t_c_glib_generator::generate_object(t_struct* tstruct) {
 
   f_types_impl_ << "GType"
                 << endl << this->nspace_lc << name_u << "_get_type (void)" << endl << "{"
-                << endl << "  static volatile gsize type = 0;" << endl  << endl
+                << endl << "  static volatile GType type = 0;" << endl  << endl
                 << "  if (g_once_init_enter (&type))" << endl << "  {"
                 << endl << "    GType _type = g_type_register_static_simple (THRIFT_TYPE_STRUCT," 
                 << endl << "                                               "
